@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "type": "object",
+  "properties": {
+    "url": {
+      "title": "URL",
+      "type": "string"
+    },
+    "token": {
+      "title": "Token",
+      "type": "string"
+    },
+    "entity_type": {
+      "title": "Entity Type",
+      "type": "string",
+      "default": "Participant"
+    }
+  },
+  "required": [
+    "url",
+    "token"
+  ]
+}
