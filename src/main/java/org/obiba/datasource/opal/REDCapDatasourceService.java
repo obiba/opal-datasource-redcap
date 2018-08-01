@@ -79,10 +79,13 @@ public class REDCapDatasourceService implements DatasourceService {
 
   @Override
   public DatasourceFactory createDatasourceFactory(DatasourceUsage usage, JSONObject parameters) {
-    REDCapDatasourceFactory exampleDatasourceFactory = new REDCapDatasourceFactory();
-    exampleDatasourceFactory.setName(parameters.optString("name"));
+    REDCapDatasourceFactory redcapDatasourceFactory = new REDCapDatasourceFactory();
+    redcapDatasourceFactory.setUrl(parameters.optString("url"));
+    redcapDatasourceFactory.setToken(parameters.optString("token"));
+    redcapDatasourceFactory.setEntityType(parameters.optString("entity_type"));
+    redcapDatasourceFactory.setIdVariable(parameters.optString("id_variable"));
 
-    return exampleDatasourceFactory;
+    return redcapDatasourceFactory;
   }
 
   private void initUsages() {

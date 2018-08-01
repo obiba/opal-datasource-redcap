@@ -4,20 +4,28 @@
   "properties": {
     "url": {
       "title": "URL",
-      "type": "string"
+      "type": "string",
+      "default": "https://bbmc.ouhsc.edu/redcap/api/"
     },
     "token": {
       "title": "Token",
-      "type": "string"
+      "type": "string",
+      "default": "9A81268476645C4E5F03428B8AC3AA7B"
     },
     "entity_type": {
       "title": "Entity Type",
       "type": "string",
       "default": "Participant"
+    },
+    "id_variable": {
+      "title": "Identifier Variable Name",
+      "type": "string",
+      "default": "record_id"
     }
   },
   "required": [
     "url",
-    "token"
+    "token",
+    "id_variable"
   ]
 }

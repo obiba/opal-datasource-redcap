@@ -1,14 +1,59 @@
 package org.obiba.datasource.opal.support;
 
+import com.google.common.base.Strings;
 import org.obiba.datasource.opal.REDCapDatasource;
 import org.obiba.magma.AbstractDatasourceFactory;
 import org.obiba.magma.Datasource;
 
 public class REDCapDatasourceFactory extends AbstractDatasourceFactory {
 
-	@Override
+  private static final String DEFAULT_ENTITY_TYPE = "Participant";
+
+  private String url;
+
+  private String token;
+
+  private String entityType;
+
+  private String idVariable;
+
+  public REDCapDatasourceFactory() {
+  }
+
+  @Override
 	protected Datasource internalCreate() {
-		return new REDCapDatasource(getName());
+		return new REDCapDatasource(getName(), getUrl(), getToken(), getEntityType(), getIdVariable());
 	}
 
+  private String getUrl() {
+    return url;
+  }
+
+  public void setUrl(String url) {
+    this.url = url;
+  }
+
+  private String getToken() {
+    return token;
+  }
+
+  public void setToken(String token) {
+    this.token = token;
+  }
+
+  private String getEntityType() {
+    return Strings.isNullOrEmpty(entityType) ? DEFAULT_ENTITY_TYPE : entityType;
+  }
+
+  public void setEntityType(String entityType) {
+    this.entityType = entityType;
+  }
+
+  private String getIdVariable() {
+    return idVariable;
+  }
+
+  public void setIdVariable(String idVariable) {
+    this.idVariable = idVariable;
+  }
 }
