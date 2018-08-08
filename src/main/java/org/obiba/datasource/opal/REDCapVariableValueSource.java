@@ -10,9 +10,6 @@
 
 package org.obiba.datasource.opal;
 
-import java.util.List;
-import java.util.Map;
-
 import javax.validation.constraints.NotNull;
 
 import org.obiba.magma.AbstractVariableValueSource;
@@ -28,11 +25,8 @@ public class REDCapVariableValueSource extends AbstractVariableValueSource imple
 
   private final Variable variable;
 
-  private final List<Map<String, String>> records;
-
-  public REDCapVariableValueSource(Variable variable, List<Map<String, String>> records) {
+  public REDCapVariableValueSource(Variable variable) {
     this.variable = variable;
-    this.records = records;
   }
 
   @NotNull

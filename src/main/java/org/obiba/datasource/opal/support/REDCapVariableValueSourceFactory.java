@@ -34,17 +34,15 @@ public class REDCapVariableValueSourceFactory implements VariableValueSourceFact
 
   private final Map<String, Map<String, String>> metadata;
 
-  private final String idVariable;
+  private final String identifierVariable;
 
-  private final List<Map<String, String>> records;
 
   public REDCapVariableValueSourceFactory(String entityType, Map<String, Map<String, String>> metadata,
-      List<Map<String, String>> records, String idVariable) {
+      String identifierVariable) {
 
     this.entityType = entityType;
     this.metadata = metadata;
-    this.records = records;
-    this.idVariable = idVariable;
+    this.identifierVariable = identifierVariable;
   }
 
   @Override
@@ -53,11 +51,14 @@ public class REDCapVariableValueSourceFactory implements VariableValueSourceFact
 
     List<Map<String, String>> mdList = metadata.values()
         .stream()
-        .filter(value -> !value.get("field_name").equals(idVariable))
+        .filter(value -> !value.get("field_name").equals(identifierVariable))
         .collect(Collectors.toList());
 
     IntStream.range(0, mdList.size())
-        .forEach(index -> sources.add(new REDCapVariableValueSource(createVariable(mdList.get(index), index), records)));
+        .forEach(index -> {
+          Map<String, String> stringStringMap = mdList.get(index);
+          sources.add(new REDCapVariableValueSource(createVariable(stringStringMap, index)));
+        });
 
     return sources;
   }
@@ -76,7 +77,7 @@ public class REDCapVariableValueSourceFactory implements VariableValueSourceFact
 
   private void addCategories(Variable.Builder builder, Map<String, String> variableMetadata) {
     String select_choices = variableMetadata.get("select_choices_or_calculations");
-    if(!Strings.isNullOrEmpty(select_choices) && select_choices.contains("|")) {
+    if(!Strings.isNullOrEmpty(select_choices) && hasCategories(variableMetadata)) {
       Stream.of(select_choices.split("\\|")).forEach(parts -> {
         String[] catParts = parts.split("\\s*,\\s*");
         builder.addCategory(
@@ -88,11 +89,22 @@ public class REDCapVariableValueSourceFactory implements VariableValueSourceFact
     }
   }
 
+  private boolean hasCategories(Map<String, String> variableMetadata) {
+    switch(variableMetadata.get("field_type")) {
+      case "checkbox":
+      case "radio":
+      case "dropdown":
+        return true;
+    }
+
+    return false;
+  }
+
   private void addAttributes(Variable.Builder builder, Map<String, String> variableMetadata) {
-    addAttribute(builder, "REDCap", "form name", variableMetadata.get("form_name"));
+    addAttribute(builder, "REDCap", "form_name", variableMetadata.get("form_name"));
     String calculations = variableMetadata.get("select_choices_or_calculations");
-    if(!Strings.isNullOrEmpty(calculations) && !calculations.contains("|")) {
-      addAttribute(builder, "REDCap", "calculations", calculations);
+    if(!Strings.isNullOrEmpty(calculations) && !hasCategories(variableMetadata)) {
+      addAttribute(builder, "REDCap", "select_choices_or_calculations", calculations);
     }
   }
 

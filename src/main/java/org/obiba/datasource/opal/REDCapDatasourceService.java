@@ -82,8 +82,9 @@ public class REDCapDatasourceService implements DatasourceService {
     REDCapDatasourceFactory redcapDatasourceFactory = new REDCapDatasourceFactory();
     redcapDatasourceFactory.setUrl(parameters.optString("url"));
     redcapDatasourceFactory.setToken(parameters.optString("token"));
+    redcapDatasourceFactory.setProjectName(parameters.optString("project_name"));
     redcapDatasourceFactory.setEntityType(parameters.optString("entity_type"));
-    redcapDatasourceFactory.setIdVariable(parameters.optString("id_variable"));
+    redcapDatasourceFactory.setIdentifierVariable(parameters.optString("id_variable"));
 
     return redcapDatasourceFactory;
   }

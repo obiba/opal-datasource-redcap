@@ -12,7 +12,6 @@ package org.obiba.datasource.opal.support;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -72,16 +71,32 @@ public class REDCapClient {
         .collect(Collectors.toSet());
   }
 
+  public Set<String> getIdentifiers(String identifierVariable) throws IOException {
+    List<NameValuePair> params = new ArrayList<>();
+    params.add(new BasicNameValuePair("content", "record"));
+    params.add(new BasicNameValuePair("fields[0]", "identifierVariable"));
+    return post(params).stream().map(result -> result.get(identifierVariable)).collect(Collectors.toSet());
+  }
+
   public Map<String, Map<String, String>> getMetadata() throws IOException {
     List<NameValuePair> params = new ArrayList<>();
     params.add(new BasicNameValuePair("content", "metadata"));
     return post(params).stream().collect(Collectors.toMap(md -> md.get("field_name"), md -> md));
   }
 
-  public List<Map<String, String>> getRecords() throws IOException {
+  public List<Map<String, String>> getRecords(List<String> recordIds) throws IOException {
     List<NameValuePair> params = new ArrayList<>();
     params.add(new BasicNameValuePair("content", "record"));
+
+    if (recordIds != null) {
+      recordIds.forEach(recordId -> params.add(new BasicNameValuePair("records[]", recordId)));
+    }
+
     return post(params);
+  }
+
+  public List<Map<String, String>> getAllRecords() throws IOException {
+    return getRecords(null);
   }
 
   public List<Map<String, String>> getProjectInfo() throws IOException {

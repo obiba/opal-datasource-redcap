@@ -13,16 +13,18 @@ public class REDCapDatasourceFactory extends AbstractDatasourceFactory {
 
   private String token;
 
+  private String projectName;
+
   private String entityType;
 
-  private String idVariable;
+  private String identifierVariable;
 
   public REDCapDatasourceFactory() {
   }
 
   @Override
 	protected Datasource internalCreate() {
-		return new REDCapDatasource(getName(), getUrl(), getToken(), getEntityType(), getIdVariable());
+		return new REDCapDatasource(getName(), getUrl(), getToken(), getProjectName(), getEntityType(), getIdentifierVariable());
 	}
 
   private String getUrl() {
@@ -49,11 +51,19 @@ public class REDCapDatasourceFactory extends AbstractDatasourceFactory {
     this.entityType = entityType;
   }
 
-  private String getIdVariable() {
-    return idVariable;
+  private String getIdentifierVariable() {
+    return identifierVariable;
   }
 
-  public void setIdVariable(String idVariable) {
-    this.idVariable = idVariable;
+  public void setIdentifierVariable(String identifierVariable) {
+    this.identifierVariable = identifierVariable;
+  }
+
+  public String getProjectName() {
+    return projectName;
+  }
+
+  public void setProjectName(String projectName) {
+    this.projectName = projectName;
   }
 }

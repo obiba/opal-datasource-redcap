@@ -29,17 +29,20 @@ public class REDCapDatasource extends AbstractDatasource {
 
   private final Map<String, REDCapValueTable> valueTablesMapOnInit = new LinkedHashMap<>();
 
-  private final String idVariable;
+  private final String identifierVariable;
+
+  private final String projectName;
 
   private REDCapClient client;
 
-  public REDCapDatasource(@NotNull String name, @NotNull String url, @NotNull String token, @NotNull String entityType,
-      @NotNull String idVariable) {
+  public REDCapDatasource(@NotNull String name, @NotNull String url, @NotNull String token, @NotNull String  projectName, @NotNull String entityType,
+      @NotNull String identifierVariable) {
     super(name, "REDCap");
     this.url = url;
     this.token = token;
+    this.projectName = projectName;
     this.entityType = entityType;
-    this.idVariable = idVariable;
+    this.identifierVariable = identifierVariable;
   }
 
   @Override
@@ -48,11 +51,7 @@ public class REDCapDatasource extends AbstractDatasource {
 
     try {
       client.connect();
-      client.getInstruments().stream().forEach(instrument -> {
-        if(!valueTablesMapOnInit.containsKey(instrument)) {
-          valueTablesMapOnInit.put(instrument, new REDCapValueTable(client, this, instrument, entityType, idVariable));
-        }
-      });
+      valueTablesMapOnInit.put(projectName, new REDCapValueTable(client, this, projectName, entityType, identifierVariable));
     } catch(IOException e) {
       logger.error(e.getMessage());
     }

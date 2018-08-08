@@ -5,12 +5,17 @@
     "url": {
       "title": "URL",
       "type": "string",
-      "default": "https://bbmc.ouhsc.edu/redcap/api/"
+      "default": "https://redcap.ircm.qc.ca/redcap/api/"
     },
     "token": {
       "title": "Token",
       "type": "string",
-      "default": "9A81268476645C4E5F03428B8AC3AA7B"
+      "default": "9AF43268A2793130C2756C8EFAD849C1"
+    },
+    "project_name": {
+      "title": "Project Name",
+      "type": "string",
+      "default": "Test"
     },
     "entity_type": {
       "title": "Entity Type",
@@ -26,6 +31,7 @@
   "required": [
     "url",
     "token",
+    "project_name",
     "id_variable"
   ]
 }
