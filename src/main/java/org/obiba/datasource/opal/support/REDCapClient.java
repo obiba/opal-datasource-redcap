@@ -13,6 +13,7 @@ package org.obiba.datasource.opal.support;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,16 +29,20 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.google.common.base.Strings;
 
 public class REDCapClient {
 
-  public static final String DEFAULT_FORMAT = "json";
+  private static final String DEFAULT_FORMAT = "xml";
 
   private final String url;
 
   private final String token;
 
   private String format = DEFAULT_FORMAT;
+
+  private String returnFormat = "json";
 
   private CloseableHttpClient client = null;
 
@@ -58,11 +63,33 @@ public class REDCapClient {
     }
   }
 
+  /**
+   * Format used for export (meta-data, records, etc)
+   *
+   * @param value
+   * @return
+   */
   public REDCapClient withFormat(String value) {
     format = value;
     return this;
   }
 
+  /**
+   * Format used for an error response
+   * @param value
+   * @return
+   */
+  public REDCapClient withReturnFormat(String value) {
+    returnFormat = value;
+    return this;
+  }
+
+  /**
+   * Returns list of project instruments
+   *
+   * @return
+   * @throws IOException
+   */
   public Set<String> getInstruments() throws IOException {
     List<NameValuePair> params = new ArrayList<>();
     params.add(new BasicNameValuePair("content", "instrument"));
@@ -78,12 +105,28 @@ public class REDCapClient {
     return post(params).stream().map(result -> result.get(identifierVariable)).collect(Collectors.toSet());
   }
 
+  /**
+   * Returns the variable metadata in its original order
+   *
+   * @return
+   * @throws IOException
+   */
   public Map<String, Map<String, String>> getMetadata() throws IOException {
     List<NameValuePair> params = new ArrayList<>();
     params.add(new BasicNameValuePair("content", "metadata"));
-    return post(params).stream().collect(Collectors.toMap(md -> md.get("field_name"), md -> md));
+    List<Map<String, String>> result = post(params);
+    LinkedHashMap<String, Map<String, String>> metaDataMap = new LinkedHashMap<>();
+    result.forEach(data -> metaDataMap.put(data.get("field_name"), data));
+    return metaDataMap;
   }
 
+  /**
+   * Returns the records for the given IDs
+   *
+   * @param recordIds
+   * @return
+   * @throws IOException
+   */
   public List<Map<String, String>> getRecords(List<String> recordIds) throws IOException {
     List<NameValuePair> params = new ArrayList<>();
     params.add(new BasicNameValuePair("content", "record"));
@@ -106,9 +149,24 @@ public class REDCapClient {
   }
 
   private List<Map<String, String>> post(List<NameValuePair> params) throws IOException {
+    return post(params, DEFAULT_FORMAT);
+  }
+
+  /**
+   * Sends request to REDCap API server
+   *
+   * @param params
+   * @param requiredFormat
+   * @return
+   * @throws IOException
+   */
+  private List<Map<String, String>> post(List<NameValuePair> params, String requiredFormat) throws IOException {
     HttpPost httpPost = new HttpPost(url);
+    String theFormat = Strings.isNullOrEmpty(requiredFormat) ? format : requiredFormat;
+
     params.add(new BasicNameValuePair("token", token));
-    params.add(new BasicNameValuePair("format", format));
+    params.add(new BasicNameValuePair("format", theFormat));
+    params.add(new BasicNameValuePair("returnFormat", returnFormat));
     httpPost.setEntity(new UrlEncodedFormEntity(params));
 
     CloseableHttpResponse response = client.execute(httpPost);
@@ -116,7 +174,7 @@ public class REDCapClient {
 
     if (statusLine.getStatusCode() == 200) {
       try(InputStream inputStream = response.getEntity().getContent()) {
-        ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = getObjectMapperForFormat(theFormat);
         return mapper.readValue(inputStream, mapper.getTypeFactory().constructCollectionType(List.class, Map.class));
       } catch(Exception e) {
         throw new REDCapDatasourceParsingException(e.getMessage(), "", null);
@@ -124,5 +182,10 @@ public class REDCapClient {
     }
 
     throw new REDCapDatasourceParsingException(statusLine.getReasonPhrase() + statusLine.getStatusCode(), "", null);
+  }
+
+  private ObjectMapper getObjectMapperForFormat(String targetFormat) {
+    if ("xml".equals(targetFormat)) return new XmlMapper();
+    return new ObjectMapper();
   }
 }

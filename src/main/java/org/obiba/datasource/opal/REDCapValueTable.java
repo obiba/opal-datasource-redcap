@@ -36,8 +36,6 @@ import org.obiba.magma.support.VariableEntityBean;
 import org.obiba.magma.support.VariableEntityProvider;
 import org.obiba.magma.type.DateTimeType;
 
-import com.google.common.collect.ImmutableSet;
-
 public class REDCapValueTable extends AbstractValueTable implements Disposable {
 
   private final REDCapClient client;
@@ -55,9 +53,11 @@ public class REDCapValueTable extends AbstractValueTable implements Disposable {
     this.identifierVariable = identifierVariable;
 
     try {
-      metadata = client.getMetadata();
+      Map<String, Map<String, String>> metadata = client.getMetadata();
 
       if (metadata.containsKey(identifierVariable)) {
+        metadata.remove(identifierVariable);
+        this.metadata = metadata;
         setVariableEntityProvider(new REDCapVariableEntityProvider(entityType));
       } else {
          throw new REDCapDatasourceParsingException("ID Variable not found", "", null);
@@ -81,7 +81,7 @@ public class REDCapValueTable extends AbstractValueTable implements Disposable {
 
   @Override
   public void initialise() {
-    addVariableValueSources(new REDCapVariableValueSourceFactory(getEntityType(), metadata, identifierVariable));
+    addVariableValueSources(new REDCapVariableValueSourceFactory(getEntityType(), metadata));
     super.initialise();
   }
 
@@ -109,7 +109,6 @@ public class REDCapValueTable extends AbstractValueTable implements Disposable {
       @NotNull
       @Override
       public Value getCreated() {
-        // Not currently possible to read a file creation timestamp. Coming in JDK 7 NIO.
         return DateTimeType.get().nullValue();
       }
     };
@@ -148,9 +147,10 @@ public class REDCapValueTable extends AbstractValueTable implements Disposable {
 
     private Set<VariableEntity> getVariableEntitiesInternal() {
       try {
-        ImmutableSet.Builder<VariableEntity> entitiesBuilder = ImmutableSet.builder();
-        client.getIdentifiers(identifierVariable).forEach(identifier -> entitiesBuilder.add(new VariableEntityBean(entityType, identifier)));
-        return entitiesBuilder.build();
+        return client.getIdentifiers(identifierVariable)
+            .stream()
+            .map(identifier -> new VariableEntityBean(entityType, identifier))
+            .collect(Collectors.toSet());
       } catch (IOException e) {
         throw new REDCapDatasourceParsingException(e.getMessage(), "", null);
       }

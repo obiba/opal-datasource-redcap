@@ -10,11 +10,8 @@
 
 package org.obiba.datasource.opal.support;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.obiba.datasource.opal.REDCapVariableValueSource;
@@ -34,31 +31,20 @@ public class REDCapVariableValueSourceFactory implements VariableValueSourceFact
 
   private final Map<String, Map<String, String>> metadata;
 
-  private final String identifierVariable;
-
-
-  public REDCapVariableValueSourceFactory(String entityType, Map<String, Map<String, String>> metadata,
-      String identifierVariable) {
+  public REDCapVariableValueSourceFactory(String entityType, Map<String, Map<String, String>> metadata) {
 
     this.entityType = entityType;
     this.metadata = metadata;
-    this.identifierVariable = identifierVariable;
   }
 
   @Override
   public Set<VariableValueSource> createSources() {
     Set<VariableValueSource> sources = Sets.newLinkedHashSet();
 
-    List<Map<String, String>> mdList = metadata.values()
-        .stream()
-        .filter(value -> !value.get("field_name").equals(identifierVariable))
-        .collect(Collectors.toList());
-
-    IntStream.range(0, mdList.size())
-        .forEach(index -> {
-          Map<String, String> stringStringMap = mdList.get(index);
-          sources.add(new REDCapVariableValueSource(createVariable(stringStringMap, index)));
-        });
+    metadata.values().forEach(value -> {
+      int index = 0;
+      sources.add(new REDCapVariableValueSource(createVariable(value, index++)));
+    });
 
     return sources;
   }
