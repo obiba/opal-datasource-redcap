@@ -86,11 +86,7 @@ public class REDCapVariableValueSourceFactory implements VariableValueSourceFact
   }
 
   private void addAttributes(Variable.Builder builder, Map<String, String> variableMetadata) {
-    addAttribute(builder, "REDCap", "form_name", variableMetadata.get("form_name"));
-    String calculations = variableMetadata.get("select_choices_or_calculations");
-    if(!Strings.isNullOrEmpty(calculations) && !hasCategories(variableMetadata)) {
-      addAttribute(builder, "REDCap", "select_choices_or_calculations", calculations);
-    }
+    variableMetadata.forEach((key, value) -> addAttribute(builder, "REDCap", key, value));
   }
 
   private void addAttribute(Variable.Builder builder, String namespace, String name, String value) {
