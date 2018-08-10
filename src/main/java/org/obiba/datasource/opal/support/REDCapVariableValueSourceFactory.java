@@ -55,8 +55,7 @@ public class REDCapVariableValueSourceFactory implements VariableValueSourceFact
     builder.index(index);
     addAttribute(builder, null, "label", variableMetadata.get("field_label"));
     addAttributes(builder, variableMetadata);
-    // TODO implement mapper (text_validation_type_or_show_slider_number)
-    builder.type(TextType.get());
+    builder.type(REDCapTypeMapper.getType(variableMetadata));
     addCategories(builder, variableMetadata);
     return builder.build();
   }
