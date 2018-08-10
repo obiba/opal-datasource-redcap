@@ -179,11 +179,11 @@ public class REDCapClient {
         ObjectMapper mapper = getObjectMapperForFormat(theFormat);
         return mapper.readValue(inputStream, mapper.getTypeFactory().constructCollectionType(List.class, Map.class));
       } catch(Exception e) {
-        throw new REDCapDatasourceParsingException(e.getMessage(), "", null);
+        throw new REDCapDatasourceParsingException(e.getMessage(), "", new Object[] { null });
       }
     }
 
-    throw new REDCapDatasourceParsingException(statusLine.getReasonPhrase() + statusLine.getStatusCode(), "", null);
+    throw new REDCapDatasourceParsingException(statusLine.getReasonPhrase() + statusLine.getStatusCode(), "", new Object[] { null });
   }
 
   private ObjectMapper getObjectMapperForFormat(String targetFormat) {

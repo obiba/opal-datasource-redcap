@@ -17,6 +17,8 @@ public class REDCapTypeMapperTest {
 
   private Map<String, String> metadataMapWithOneEntry(String key, String value) {
     return new HashMap<String, String>() {
+      private static final long serialVersionUID = 1L;
+
       {
         put(key, value);
       }
