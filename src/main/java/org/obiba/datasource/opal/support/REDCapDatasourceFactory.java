@@ -1,5 +1,7 @@
 package org.obiba.datasource.opal.support;
 
+import java.io.IOException;
+
 import com.google.common.base.Strings;
 import org.obiba.datasource.opal.REDCapDatasource;
 import org.obiba.magma.AbstractDatasourceFactory;
@@ -24,8 +26,13 @@ public class REDCapDatasourceFactory extends AbstractDatasourceFactory {
 
   @Override
 	protected Datasource internalCreate() {
-		return new REDCapDatasource(getName(), getUrl(), getToken(), getProjectName(), getEntityType(), getIdentifierVariable());
-	}
+    try {
+      AbstractREDCapProject project = REDCapProjectFactory.create(getUrl(), getToken(), getIdentifierVariable());
+      return new REDCapDatasource(getName(), project, getEntityType(), getIdentifierVariable());
+    } catch(IOException e) {
+      throw new REDCapDatasourceParsingException(e.getMessage(), "", new Object[] { null });
+    }
+  }
 
   private String getUrl() {
     return url;

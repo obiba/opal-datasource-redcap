@@ -7,6 +7,7 @@ import java.util.Set;
 
 import javax.validation.constraints.NotNull;
 
+import org.obiba.datasource.opal.support.AbstractREDCapProject;
 import org.obiba.datasource.opal.support.REDCapClient;
 import org.obiba.magma.Value;
 import org.obiba.magma.ValueTable;
@@ -21,37 +22,33 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class REDCapDatasource extends AbstractDatasource {
   private static final Logger logger = getLogger(REDCapDatasource.class);
 
-  private final String url;
-
-  private final String token;
-
   private final String entityType;
 
   private final Map<String, REDCapValueTable> valueTablesMapOnInit = new LinkedHashMap<>();
 
   private final String identifierVariable;
 
-  private final String projectName;
+  private final AbstractREDCapProject project;
 
-  private REDCapClient client;
-
-  public REDCapDatasource(@NotNull String name, @NotNull String url, @NotNull String token, @NotNull String  projectName, @NotNull String entityType,
+  public REDCapDatasource(@NotNull String name, @NotNull AbstractREDCapProject project, @NotNull String entityType,
       @NotNull String identifierVariable) {
     super(name, "REDCap");
-    this.url = url;
-    this.token = token;
-    this.projectName = projectName;
+    this.project = project;
     this.entityType = entityType;
     this.identifierVariable = identifierVariable;
   }
 
   @Override
   protected void onInitialise() {
-    client = new REDCapClient(url, token);
 
     try {
-      client.connect();
-      valueTablesMapOnInit.put(projectName, new REDCapValueTable(client, this, projectName, entityType, identifierVariable));
+      project.getTables()
+          .stream()
+          .forEach(tabelName -> {
+            if (!valueTablesMapOnInit.containsKey(tabelName)) {
+              valueTablesMapOnInit.put(tabelName, new REDCapValueTable(this, tabelName, entityType, project, identifierVariable));
+            }
+          });
     } catch(IOException e) {
       logger.error(e.getMessage());
     }
@@ -62,7 +59,7 @@ public class REDCapDatasource extends AbstractDatasource {
     super.dispose();
 
     try {
-      client.close();
+      project.close();
     } catch(IOException e) {
       logger.error(e.getMessage());
     }

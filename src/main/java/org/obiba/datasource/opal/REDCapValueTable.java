@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
 
-import org.obiba.datasource.opal.support.REDCapClient;
+import org.obiba.datasource.opal.support.AbstractREDCapProject;
 import org.obiba.datasource.opal.support.REDCapDatasourceParsingException;
 import org.obiba.datasource.opal.support.REDCapVariableValueSourceFactory;
 import org.obiba.magma.Datasource;
@@ -38,7 +38,7 @@ import org.obiba.magma.type.DateTimeType;
 
 public class REDCapValueTable extends AbstractValueTable implements Disposable {
 
-  private final REDCapClient client;
+  private final AbstractREDCapProject project;
 
   private final Map<String, Map<String, String>> metadata;
 
@@ -46,14 +46,14 @@ public class REDCapValueTable extends AbstractValueTable implements Disposable {
 
   private final String identifierVariable;
 
-  REDCapValueTable(@NotNull REDCapClient client, @NotNull Datasource datasource, @NotNull String name,
-      @NotNull String entityType, @NotNull String identifierVariable) {
+  REDCapValueTable(@NotNull Datasource datasource, @NotNull String name,
+      @NotNull String entityType, @NotNull AbstractREDCapProject project, @NotNull String identifierVariable) {
     super(datasource, name);
-    this.client = client;
+    this.project = project;
     this.identifierVariable = identifierVariable;
 
     try {
-      Map<String, Map<String, String>> metadata = client.getMetadata();
+      Map<String, Map<String, String>> metadata = project.getMetadata(name);
 
       if (metadata.containsKey(identifierVariable)) {
         metadata.remove(identifierVariable);
@@ -72,7 +72,8 @@ public class REDCapValueTable extends AbstractValueTable implements Disposable {
   @Override
   protected ValueSetBatch getValueSetsBatch(List<VariableEntity> entities) {
     try {
-      records = client.getRecords(entities.stream().map(VariableEntity::getIdentifier).collect(Collectors.toList()));
+      List<String> recordIds = entities.stream().map(VariableEntity::getIdentifier).collect(Collectors.toList());
+      records = project.getRecrods(recordIds, name);
     } catch(IOException e) {
       throw new REDCapDatasourceParsingException(e.getMessage(), "", new Object[] { null });
     }
@@ -147,7 +148,7 @@ public class REDCapValueTable extends AbstractValueTable implements Disposable {
 
     private Set<VariableEntity> getVariableEntitiesInternal() {
       try {
-        return client.getIdentifiers(identifierVariable)
+        return project.getIdentifiers(name)
             .stream()
             .map(identifier -> new VariableEntityBean(entityType, identifier))
             .collect(Collectors.toSet());

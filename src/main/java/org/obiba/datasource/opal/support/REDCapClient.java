@@ -27,12 +27,18 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
+import org.slf4j.Logger;
 
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.google.common.base.Strings;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 public class REDCapClient {
+
+  private static final Logger log = getLogger(REDCapClient.class);
 
   private static final String DEFAULT_FORMAT = "xml";
 
@@ -46,17 +52,17 @@ public class REDCapClient {
 
   private CloseableHttpClient client = null;
 
-  public REDCapClient(String url, String token) {
+  REDCapClient(String url, String token) {
     this.url = url;
     this.token = token;
   }
 
-  public void connect() throws IOException {
+  void connect() throws IOException {
     close();
     client = HttpClients.createDefault();
   }
 
-  public void close() throws IOException {
+  void close() throws IOException {
     if (client != null) {
       client.close();
       client = null;
@@ -90,19 +96,12 @@ public class REDCapClient {
    * @return
    * @throws IOException
    */
-  public Set<String> getInstruments() throws IOException {
+  Set<String> getInstruments() throws IOException {
     List<NameValuePair> params = new ArrayList<>();
     params.add(new BasicNameValuePair("content", "instrument"));
-    return post(params).stream()
+    return postAndGetAsList(params, DEFAULT_FORMAT).stream()
         .map(instrument -> instrument.get("instrument_name"))
         .collect(Collectors.toSet());
-  }
-
-  public Set<String> getIdentifiers(String identifierVariable) throws IOException {
-    List<NameValuePair> params = new ArrayList<>();
-    params.add(new BasicNameValuePair("content", "record"));
-    params.add(new BasicNameValuePair("fields[0]", "identifierVariable"));
-    return post(params).stream().map(result -> result.get(identifierVariable)).collect(Collectors.toSet());
   }
 
   /**
@@ -111,10 +110,19 @@ public class REDCapClient {
    * @return
    * @throws IOException
    */
-  public Map<String, Map<String, String>> getMetadata() throws IOException {
+  Map<String, Map<String, String>> getMetadata(List<String> forms, List<String> fields) throws IOException {
     List<NameValuePair> params = new ArrayList<>();
     params.add(new BasicNameValuePair("content", "metadata"));
-    List<Map<String, String>> result = post(params);
+
+    if (forms != null) {
+      forms.forEach(form -> params.add(new BasicNameValuePair("forms[]", form)));
+    }
+
+    if (fields != null) {
+      fields.forEach(field -> params.add(new BasicNameValuePair("fields[]", field)));
+    }
+
+    List<Map<String, String>> result = postAndGetAsList(params, DEFAULT_FORMAT);
     MetaDataHelper.splitChoicesMetaData(result);
 
     LinkedHashMap<String, Map<String, String>> metaDataMap = new LinkedHashMap<>();
@@ -129,7 +137,11 @@ public class REDCapClient {
    * @return
    * @throws IOException
    */
-  public List<Map<String, String>> getRecords(List<String> recordIds) throws IOException {
+  List<Map<String, String>> getRecords(
+      List<String> recordIds,
+      List<String> fields,
+      List<String> forms,
+      List<String> events) throws IOException {
     List<NameValuePair> params = new ArrayList<>();
     params.add(new BasicNameValuePair("content", "record"));
 
@@ -137,21 +149,53 @@ public class REDCapClient {
       recordIds.forEach(recordId -> params.add(new BasicNameValuePair("records[]", recordId)));
     }
 
-    return post(params);
+    if (fields != null) {
+      fields.forEach(field -> params.add(new BasicNameValuePair("fields[]", field)));
+    }
+
+    if (forms != null) {
+      forms.forEach(form -> params.add(new BasicNameValuePair("forms[]", form)));
+    }
+
+    if (events != null) {
+      events.forEach(event -> params.add(new BasicNameValuePair("events[]", event)));
+    }
+
+    return postAndGetAsList(params, DEFAULT_FORMAT);
   }
 
-  public List<Map<String, String>> getAllRecords() throws IOException {
-    return getRecords(null);
-  }
-
-  public List<Map<String, String>> getProjectInfo() throws IOException {
+  Map<String, String> getProjectInfo() throws IOException {
     List<NameValuePair> params = new ArrayList<>();
     params.add(new BasicNameValuePair("content", "project"));
-    return post(params);
+    return postAndGetAsMap(params, DEFAULT_FORMAT);
   }
 
-  private List<Map<String, String>> post(List<NameValuePair> params) throws IOException {
-    return post(params, DEFAULT_FORMAT);
+  List<Map<String, String>> getFormEventMapping() throws IOException {
+    List<NameValuePair> params = new ArrayList<>();
+    params.add(new BasicNameValuePair("content", "formEventMapping"));
+    return postAndGetAsList(params, DEFAULT_FORMAT);
+  }
+
+  List<Map<String, String>> getRepeatingFormEvents() throws IOException {
+    List<NameValuePair> params = new ArrayList<>();
+    params.add(new BasicNameValuePair("content", "repeatingFormsEvents"));
+    return postAndGetAsList(params, DEFAULT_FORMAT);
+  }
+
+  private List<Map<String, String>> postAndGetAsList(List<NameValuePair> params, String requiredFormat)
+      throws IOException {
+    String theFormat = Strings.isNullOrEmpty(requiredFormat) ? format : requiredFormat;
+    ObjectMapper mapper = getObjectMapperForFormat(theFormat);
+    JavaType javaType = mapper.getTypeFactory().constructCollectionType(List.class, Map.class);
+    return post(params, theFormat, mapper, javaType);
+  }
+
+  private Map<String, String> postAndGetAsMap(List<NameValuePair> params, String requiredFormat)
+      throws IOException {
+    String theFormat = Strings.isNullOrEmpty(requiredFormat) ? format : requiredFormat;
+    ObjectMapper mapper = getObjectMapperForFormat(theFormat);
+    JavaType javaType = mapper.getTypeFactory().constructMapType(Map.class, String.class, String.class);
+    return post(params, theFormat, mapper, javaType);
   }
 
   /**
@@ -162,22 +206,22 @@ public class REDCapClient {
    * @return
    * @throws IOException
    */
-  private List<Map<String, String>> post(List<NameValuePair> params, String requiredFormat) throws IOException {
+  private <T> T post(List<NameValuePair> params, String requiredFormat, ObjectMapper mapper, JavaType javaType) throws IOException {
     HttpPost httpPost = new HttpPost(url);
-    String theFormat = Strings.isNullOrEmpty(requiredFormat) ? format : requiredFormat;
 
     params.add(new BasicNameValuePair("token", token));
-    params.add(new BasicNameValuePair("format", theFormat));
+    params.add(new BasicNameValuePair("format", requiredFormat));
     params.add(new BasicNameValuePair("returnFormat", returnFormat));
     httpPost.setEntity(new UrlEncodedFormEntity(params));
 
+    log.debug("Sending REDCap request: {}", httpPost.toString());
     CloseableHttpResponse response = client.execute(httpPost);
     StatusLine statusLine = response.getStatusLine();
+    log.debug("Sending REDCap response status: {}", statusLine);
 
     if (statusLine.getStatusCode() == 200) {
       try(InputStream inputStream = response.getEntity().getContent()) {
-        ObjectMapper mapper = getObjectMapperForFormat(theFormat);
-        return mapper.readValue(inputStream, mapper.getTypeFactory().constructCollectionType(List.class, Map.class));
+        return mapper.readValue(inputStream, javaType);
       } catch(Exception e) {
         throw new REDCapDatasourceParsingException(e.getMessage(), "", new Object[] { null });
       }
