@@ -27,7 +27,7 @@ public class REDCapValueSet extends ValueSetBean {
 
   private final Map<String, Value> rows = new HashMap<>();
 
-  public REDCapValueSet(@NotNull ValueTable table, @NotNull VariableEntity entity, @NotNull String identifierVariable,
+  REDCapValueSet(@NotNull ValueTable table, @NotNull VariableEntity entity, @NotNull String identifierVariable,
       List<Map<String, String>> records) {
     super(table, entity);
     loadVariables(records, identifierVariable);
@@ -47,9 +47,6 @@ public class REDCapValueSet extends ValueSetBean {
   private void loadVariables(List<Map<String, String>> records, String identifierVariable) {
     records.stream()
         .filter(record -> record.get(identifierVariable).equals(getVariableEntity().getIdentifier()))
-        .forEach(record ->
-            record.entrySet().stream()
-              .forEach(entry -> rows.put(entry.getKey(), TextType.get().valueOf(entry.getValue())))
-        );
+        .forEach(record -> record.forEach((key, value) -> rows.put(key, TextType.get().valueOf(value))));
   }
 }

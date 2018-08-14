@@ -10,8 +10,11 @@
 
 package org.obiba.datasource.opal.support;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.obiba.datasource.opal.REDCapVariableValueSource;
@@ -40,11 +43,11 @@ public class REDCapVariableValueSourceFactory implements VariableValueSourceFact
   @Override
   public Set<VariableValueSource> createSources() {
     Set<VariableValueSource> sources = Sets.newLinkedHashSet();
+    int index = 0;
 
-    metadata.values().forEach(value -> {
-      int index = 0;
+    for(Map<String,String> value : metadata.values()) {
       sources.add(new REDCapVariableValueSource(createVariable(value, index++)));
-    });
+    }
 
     return sources;
   }
