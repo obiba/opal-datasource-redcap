@@ -15,8 +15,6 @@ public class REDCapDatasourceFactory extends AbstractDatasourceFactory {
 
   private String token;
 
-  private String projectName;
-
   private String entityType;
 
   private String identifierVariable;
@@ -66,11 +64,4 @@ public class REDCapDatasourceFactory extends AbstractDatasourceFactory {
     this.identifierVariable = identifierVariable;
   }
 
-  public String getProjectName() {
-    return projectName;
-  }
-
-  public void setProjectName(String projectName) {
-    this.projectName = projectName;
-  }
 }

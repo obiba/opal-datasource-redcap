@@ -4,18 +4,11 @@
   "properties": {
     "url": {
       "title": "URL",
-      "type": "string",
-      "default": "https://redcap.ircm.qc.ca/redcap/api/"
+      "type": "string"
     },
     "token": {
       "title": "Token",
-      "type": "string",
-      "default": "9AF43268A2793130C2756C8EFAD849C1"
-    },
-    "project_name": {
-      "title": "Project Name",
-      "type": "string",
-      "default": "Test"
+      "type": "string"
     },
     "entity_type": {
       "title": "Entity Type",
@@ -24,14 +17,12 @@
     },
     "id_variable": {
       "title": "Identifier Variable Name",
-      "type": "string",
-      "default": "record_id"
+      "type": "string"
     }
   },
   "required": [
     "url",
     "token",
-    "project_name",
     "id_variable"
   ]
 }
