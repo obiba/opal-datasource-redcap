@@ -14,10 +14,15 @@
       "title": "Entity Type",
       "type": "string",
       "default": "Participant"
+    },
+    "id_variable": {
+      "title": "Identifier Variable Name",
+      "type": "string"
     }
   },
   "required": [
     "url",
-    "token"
+    "token",
+    "id_variable"
   ]
 }
