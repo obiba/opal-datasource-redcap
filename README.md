@@ -2,6 +2,15 @@ Opal REDCap Plugin
 
 This plugin can import non-repeating longitudinal and non-longitudinal REDCap projects. For longitudinal projects. 
 
+## How to use site.properties
+This configuration file is meant to provide default values for REDCap datasource plugin. For example, to provide default values for a REDCap project URL and token, you can add add these in the `site.properties` file:
+
+```properties
+usage.IMPORT.url=http://test.org/redcap/api
+usage.IMPORT.token=DKJSDLFJLFJEWLJEWAMDMASDMLWQEK
+```
+When Opal server starts and the plugin is loaded, these two values no longer need to be entered by the user in the UI, the above values will be used instead.
+
 [Opal](https://github.com/obiba/opal) is OBiBa’s core database application for biobanks or epidemiological studies.
 
 * Have a bug or a question? Please create an issue on [GitHub](https://github.com/obiba/opal-search-es/issues).
