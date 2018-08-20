@@ -10,12 +10,12 @@
 
 package org.obiba.datasource.opal.support;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
+
+import com.google.common.base.Strings;
+import com.google.common.collect.Sets;
 
 import org.obiba.datasource.opal.REDCapVariableValueSource;
 import org.obiba.magma.Attribute;
@@ -24,9 +24,6 @@ import org.obiba.magma.Variable;
 import org.obiba.magma.VariableValueSource;
 import org.obiba.magma.VariableValueSourceFactory;
 import org.obiba.magma.type.TextType;
-
-import com.google.common.base.Strings;
-import com.google.common.collect.Sets;
 
 public class REDCapVariableValueSourceFactory implements VariableValueSourceFactory {
 
