@@ -1,5 +1,7 @@
 package org.obiba.datasource.opal;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -8,7 +10,6 @@ import java.util.Set;
 import javax.validation.constraints.NotNull;
 
 import org.obiba.datasource.opal.support.AbstractREDCapProject;
-import org.obiba.datasource.opal.support.REDCapClient;
 import org.obiba.magma.Value;
 import org.obiba.magma.ValueTable;
 import org.obiba.magma.ValueTableWriter;
@@ -16,8 +17,6 @@ import org.obiba.magma.Variable;
 import org.obiba.magma.VariableEntity;
 import org.obiba.magma.support.AbstractDatasource;
 import org.slf4j.Logger;
-
-import static org.slf4j.LoggerFactory.getLogger;
 
 public class REDCapDatasource extends AbstractDatasource {
   private static final Logger logger = getLogger(REDCapDatasource.class);

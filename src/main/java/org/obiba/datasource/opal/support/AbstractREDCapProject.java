@@ -15,13 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.slf4j.Logger;
-
-import static org.slf4j.LoggerFactory.getLogger;
-
 public abstract class AbstractREDCapProject {
-
-  private static final Logger log = getLogger(AbstractREDCapProject.class);
 
   protected final REDCapClient client;
 
