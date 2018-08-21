@@ -1,4 +1,4 @@
-Opal REDCap Plugin
+# Opal REDCap Plugin [![Build Status](https://travis-ci.org/obiba/opal-datasource-redcap.svg?branch=master)](https://travis-ci.org/obiba/opal-datasource-redcap)
 
 This plugin can import non-repeating longitudinal and non-longitudinal REDCap projects. For longitudinal projects. 
 
