@@ -1,25 +1,29 @@
 {
   "$schema": "http://json-schema.org/schema#",
-  "type": "object",
-  "properties": {
-    "url": {
+  "type": "array",
+  "items": [
+    {
+      "key": "url",
       "title": "URL",
       "type": "string"
     },
-    "token": {
+    {
+      "key": "token",
       "title": "Token",
       "type": "string"
     },
-    "entity_type": {
+    {
+      "key": "entity_type",
       "title": "Entity Type",
       "type": "string",
       "default": "Participant"
     },
-    "id_variable": {
+    {
+      "key": "id_variable",
       "title": "Identifier Variable Name",
       "type": "string"
     }
-  },
+  ],
   "required": [
     "url",
     "token",
