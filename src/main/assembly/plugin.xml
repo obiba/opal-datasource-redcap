@@ -47,7 +47,10 @@
           org.obiba.datasource:*
         </include>
         <include>
-          com.fasterxml.jackson.dataformat:*
+          com.fasterxml.jackson.module:jackson-module-jaxb-annotations:*
+        </include>
+        <include>
+          com.fasterxml.jackson.dataformat:jackson-dataformat-xml:*
         </include>
         <include>
           org.codehaus.woodstox:*
