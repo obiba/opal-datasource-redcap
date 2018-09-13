@@ -17,6 +17,8 @@
     <opal.version>2.12-SNAPSHOT</opal.version>
     <obiba-commons.version>1.10.2</obiba-commons.version>
     <httpclient.version>4.5.6</httpclient.version>
+    <fasterxml.jackson.version>2.8.1</fasterxml.jackson.version>
+    <codehaus.woodstox.version>3.1.4</codehaus.woodstox.version>
 
     <!-- maven plugins -->
     <maven-assembly-plugin.version>3.0.0</maven-assembly-plugin.version>
@@ -42,13 +44,13 @@
     <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
       <artifactId>jackson-dataformat-xml</artifactId>
-      <version>2.9.4</version>
+      <version>${fasterxml.jackson.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.codehaus.woodstox</groupId>
       <artifactId>stax2-api</artifactId>
-      <version>3.1.4</version>
+      <version>${codehaus.woodstox.version}</version>
     </dependency>
 
     <dependency>
