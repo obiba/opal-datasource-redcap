@@ -12,19 +12,20 @@
       "key": "token",
       "title": "Token",
       "type": "string",
+      "format": "password",
       "description": "REDCap access token."
-    },
-    {
-      "key": "entity_type",
-      "title": "Entity Type",
-      "type": "string",
-      "default": "Participant"
     },
     {
       "key": "id_variable",
       "title": "Identifier Variable Name",
       "type": "string",
       "description": "REDCap variable which values are the entity identifiers."
+    },
+    {
+      "key": "entity_type",
+      "title": "Entity Type",
+      "type": "string",
+      "default": "Participant"
     }
   ],
   "required": [
