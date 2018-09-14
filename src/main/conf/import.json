@@ -5,12 +5,14 @@
     {
       "key": "url",
       "title": "URL",
-      "type": "string"
+      "type": "string",
+      "description": "REDCap server address."
     },
     {
       "key": "token",
       "title": "Token",
-      "type": "string"
+      "type": "string",
+      "description": "REDCap access token."
     },
     {
       "key": "entity_type",
@@ -21,7 +23,8 @@
     {
       "key": "id_variable",
       "title": "Identifier Variable Name",
-      "type": "string"
+      "type": "string",
+      "description": "REDCap variable which values are the entity identifiers."
     }
   ],
   "required": [
