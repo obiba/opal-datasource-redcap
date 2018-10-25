@@ -40,15 +40,17 @@ public class REDCapClient {
 
   private static final Logger log = getLogger(REDCapClient.class);
 
-  private static final String DEFAULT_FORMAT = "xml";
+  private static final String XML_FORMAT = "xml";
+
+  private static final String JSON_FORMAT = "json";
 
   private final String url;
 
   private final String token;
 
-  private String format = DEFAULT_FORMAT;
+  private String format = XML_FORMAT;
 
-  private String returnFormat = "json";
+  private String returnFormat = JSON_FORMAT;
 
   private CloseableHttpClient client = null;
 
@@ -99,7 +101,7 @@ public class REDCapClient {
   Set<String> getInstruments() throws IOException {
     List<NameValuePair> params = new ArrayList<>();
     params.add(new BasicNameValuePair("content", "instrument"));
-    return postAndGetAsList(params, DEFAULT_FORMAT).stream()
+    return postAndGetAsList(params, XML_FORMAT).stream()
         .map(instrument -> instrument.get("instrument_name"))
         .collect(Collectors.toSet());
   }
@@ -122,7 +124,7 @@ public class REDCapClient {
       fields.forEach(field -> params.add(new BasicNameValuePair("fields[]", field)));
     }
 
-    List<Map<String, String>> result = postAndGetAsList(params, DEFAULT_FORMAT);
+    List<Map<String, String>> result = postAndGetAsList(params, XML_FORMAT);
     MetaDataHelper.splitChoicesMetaData(result);
 
     LinkedHashMap<String, Map<String, String>> metaDataMap = new LinkedHashMap<>();
@@ -161,25 +163,25 @@ public class REDCapClient {
       events.forEach(event -> params.add(new BasicNameValuePair("events[]", event)));
     }
 
-    return postAndGetAsList(params, DEFAULT_FORMAT);
+    return postAndGetAsList(params, JSON_FORMAT);
   }
 
   Map<String, String> getProjectInfo() throws IOException {
     List<NameValuePair> params = new ArrayList<>();
     params.add(new BasicNameValuePair("content", "project"));
-    return postAndGetAsMap(params, DEFAULT_FORMAT);
+    return postAndGetAsMap(params, XML_FORMAT);
   }
 
   List<Map<String, String>> getFormEventMapping() throws IOException {
     List<NameValuePair> params = new ArrayList<>();
     params.add(new BasicNameValuePair("content", "formEventMapping"));
-    return postAndGetAsList(params, DEFAULT_FORMAT);
+    return postAndGetAsList(params, XML_FORMAT);
   }
 
   List<Map<String, String>> getRepeatingFormEvents() throws IOException {
     List<NameValuePair> params = new ArrayList<>();
     params.add(new BasicNameValuePair("content", "repeatingFormsEvents"));
-    return postAndGetAsList(params, DEFAULT_FORMAT);
+    return postAndGetAsList(params, XML_FORMAT);
   }
 
   private List<Map<String, String>> postAndGetAsList(List<NameValuePair> params, String requiredFormat)
@@ -231,7 +233,7 @@ public class REDCapClient {
   }
 
   private ObjectMapper getObjectMapperForFormat(String targetFormat) {
-    if ("xml".equals(targetFormat)) return new XmlMapper();
+    if (XML_FORMAT.equals(targetFormat)) return new XmlMapper();
     return new ObjectMapper();
   }
 }
