@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.obiba.datasource</groupId>
   <artifactId>opal-datasource-redcap</artifactId>
@@ -13,8 +14,8 @@
 
     <junit.version>4.12</junit.version>
 
-    <opal.version>2.12-SNAPSHOT</opal.version>
-    <obiba-commons.version>1.10.2</obiba-commons.version>
+    <opal.version>2.13-SNAPSHOT</opal.version>
+    <obiba-commons.version>1.12-SNAPSHOT</obiba-commons.version>
     <httpclient.version>4.5.6</httpclient.version>
     <fasterxml.jackson.version>2.8.11</fasterxml.jackson.version>
     <codehaus.woodstox.version>3.1.4</codehaus.woodstox.version>
@@ -182,6 +183,14 @@
         <version>${maven-deploy-plugin.version}</version>
         <configuration>
           <skip>true</skip>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <useSystemClassLoader>false</useSystemClassLoader>
         </configuration>
       </plugin>
 
