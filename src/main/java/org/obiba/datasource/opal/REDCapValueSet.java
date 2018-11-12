@@ -16,6 +16,8 @@ import java.util.Map;
 
 import javax.validation.constraints.NotNull;
 
+import com.google.common.base.Strings;
+
 import org.obiba.magma.Value;
 import org.obiba.magma.ValueTable;
 import org.obiba.magma.Variable;
@@ -47,6 +49,6 @@ public class REDCapValueSet extends ValueSetBean {
   private void loadVariables(List<Map<String, String>> records, String identifierVariable) {
     records.stream()
         .filter(record -> record.get(identifierVariable).equals(getVariableEntity().getIdentifier()))
-        .forEach(record -> record.forEach((key, value) -> rows.put(key, TextType.get().valueOf(value))));
+        .forEach(record -> record.forEach((key, value) -> rows.put(key, Strings.isNullOrEmpty(value) ? TextType.get().nullValue() : TextType.get().valueOf(value))));
   }
 }
