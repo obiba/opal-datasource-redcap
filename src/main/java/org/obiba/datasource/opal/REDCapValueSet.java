@@ -43,7 +43,7 @@ public class REDCapValueSet extends ValueSetBean {
 
   Value getValue(Variable variable) {
     Value value = rows.get(variable.getName());
-    return value == null ? TextType.get().valueOf(String.format("No Value for %s", variable.getName())) : value;
+    return value == null ? TextType.get().nullValue() : value;
   }
 
   private void loadVariables(List<Map<String, String>> records, String identifierVariable) {
