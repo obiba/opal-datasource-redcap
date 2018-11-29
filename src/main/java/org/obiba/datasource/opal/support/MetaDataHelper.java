@@ -38,20 +38,42 @@ final class MetaDataHelper {
     String fieldName = metadata.get("field_name");
 
     if (m.find()) {
-      metadata.put("field_name", fieldName + "__" + m.group(1));
+      metadata.put("field_name", fieldName + sanitize(m.group(1)));
       metadata.put("field_type", "text");
       metadata.put("select_choices_or_calculations", "");
     }
 
+    // create the clones for the rest of the choice values
     while (m.find()) {
       Map<String, String> clone = Maps.newLinkedHashMap();
       clone.putAll(metadata);
-      clone.put("field_name", fieldName + "__" + m.group(1));
+      clone.put("field_name", fieldName + sanitize(m.group(1)));
       clone.put("field_type", "text");
       clone.put("select_choices_or_calculations", "");
       metadataPerChoice.add(clone);
       list.add(index + metadataPerChoice.size(), clone);
     }
+  }
+
+  /**
+   * REDCap adds 3 underscores between the variable name and each its choices (categories). In addition, the negative
+   * sign of a choice gets replaced by an underscore.
+   *
+   * Metadata:
+   * var_a ; choix 1, 2, 3, -8, -9
+   *
+   * Data record:
+   * var_a___1
+   * var_a___2
+   * var_a___3
+   * var_a____8
+   * var_a____9
+   *
+   * @param value
+   * @return sanitized choice value
+   */
+  private static String sanitize(String value) {
+    return "___" + value.replaceAll("^-", "_");
   }
 
 }
