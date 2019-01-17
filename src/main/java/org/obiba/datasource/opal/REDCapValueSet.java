@@ -48,7 +48,10 @@ public class REDCapValueSet extends ValueSetBean {
 
   private void loadVariables(List<Map<String, String>> records, String identifierVariable) {
     records.stream()
-        .filter(record -> record.get(identifierVariable).equals(getVariableEntity().getIdentifier()))
-        .forEach(record -> record.forEach((key, value) -> rows.put(key, Strings.isNullOrEmpty(value) ? TextType.get().nullValue() : TextType.get().valueOf(value))));
+        .filter(record -> record.get(identifierVariable)
+          .equals(((REDCapVariableEntityBean)getVariableEntity()).getOriginalIdentifier()))
+        .forEach(record -> record.forEach((key, value) -> rows.put(key, Strings.isNullOrEmpty(value)
+            ? TextType.get().nullValue()
+            : TextType.get().valueOf(value))));
   }
 }

@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 
 import org.obiba.datasource.opal.support.AbstractREDCapProject;
@@ -29,12 +30,22 @@ public class REDCapDatasource extends AbstractDatasource {
 
   private final AbstractREDCapProject project;
 
-  public REDCapDatasource(@NotNull String name, @NotNull AbstractREDCapProject project, @NotNull String entityType,
-      @NotNull String identifierVariable) {
+  private final String identifierPrefix;
+
+  private final String identifierSuffix;
+
+  public REDCapDatasource(@NotNull String name,
+                          @NotNull AbstractREDCapProject project,
+                          @NotNull String entityType,
+                          @NotNull String identifierVariable,
+                          @Nullable String identifierPrefix,
+                          @Nullable String identifierSuffix) {
     super(name, "REDCap");
     this.project = project;
     this.entityType = entityType;
     this.identifierVariable = identifierVariable;
+    this.identifierPrefix = identifierPrefix;
+    this.identifierSuffix = identifierSuffix;
   }
 
   @Override
@@ -45,7 +56,16 @@ public class REDCapDatasource extends AbstractDatasource {
           .stream()
           .forEach(tabelName -> {
             if (!valueTablesMapOnInit.containsKey(tabelName)) {
-              valueTablesMapOnInit.put(tabelName, new REDCapValueTable(this, tabelName, entityType, project, identifierVariable));
+              valueTablesMapOnInit.put(tabelName,
+                new REDCapValueTable(
+                  this,
+                  tabelName,
+                  entityType,
+                  project,
+                  identifierVariable,
+                  identifierPrefix,
+                  identifierSuffix
+                ));
             }
           });
     } catch(IOException e) {

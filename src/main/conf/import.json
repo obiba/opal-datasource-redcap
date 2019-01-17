@@ -22,6 +22,18 @@
       "description": "REDCap variable which values are the entity identifiers."
     },
     {
+      "key": "id_prefix",
+      "title": "Identifier Value Prefix",
+      "type": "string",
+      "description": "A text that will be added at the beginning of each identifier value."
+    },
+    {
+      "key": "id_suffix",
+      "title": "Identifier Value Suffix",
+      "type": "string",
+      "description": "A text that will be added at the end of each identifier value."
+    },
+    {
       "key": "entity_type",
       "title": "Entity Type",
       "type": "string",
