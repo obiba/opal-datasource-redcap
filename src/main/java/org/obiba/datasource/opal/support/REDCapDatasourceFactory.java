@@ -19,6 +19,10 @@ public class REDCapDatasourceFactory extends AbstractDatasourceFactory {
 
   private String identifierVariable;
 
+  private String identifierPrefix;
+
+  private String identifierSuffix;
+
   public REDCapDatasourceFactory() {
   }
 
@@ -26,7 +30,14 @@ public class REDCapDatasourceFactory extends AbstractDatasourceFactory {
 	protected Datasource internalCreate() {
     try {
       AbstractREDCapProject project = REDCapProjectFactory.create(getUrl(), getToken(), getIdentifierVariable());
-      return new REDCapDatasource(getName(), project, getEntityType(), getIdentifierVariable());
+      return new REDCapDatasource(
+        getName(),
+        project,
+        getEntityType(),
+        getIdentifierVariable(),
+        getIdentifierPrefix(),
+        getIdentifierSuffix()
+      );
     } catch(IOException e) {
       throw new REDCapDatasourceParsingException(e.getMessage(), "", new Object[] { null });
     }
@@ -64,4 +75,19 @@ public class REDCapDatasourceFactory extends AbstractDatasourceFactory {
     this.identifierVariable = identifierVariable;
   }
 
+  private String getIdentifierPrefix() {
+    return identifierPrefix;
+  }
+
+  public void setIdentifierPrefix(String identifierPrefix) {
+    this.identifierPrefix = identifierPrefix;
+  }
+
+  private String getIdentifierSuffix() {
+    return identifierSuffix;
+  }
+
+  public void setIdentifierSuffix(String identifierSuffix) {
+    this.identifierSuffix = identifierSuffix;
+  }
 }

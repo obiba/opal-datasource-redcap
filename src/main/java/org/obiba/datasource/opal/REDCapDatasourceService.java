@@ -20,6 +20,8 @@ public class REDCapDatasourceService extends AbstractDatasourceService {
     redcapDatasourceFactory.setToken(parameters.optString("token"));
     redcapDatasourceFactory.setEntityType(parameters.optString("entity_type"));
     redcapDatasourceFactory.setIdentifierVariable(parameters.optString("id_variable"));
+    redcapDatasourceFactory.setIdentifierPrefix(parameters.optString("id_prefix"));
+    redcapDatasourceFactory.setIdentifierSuffix(parameters.optString("id_suffix"));
 
     return redcapDatasourceFactory;
   }
