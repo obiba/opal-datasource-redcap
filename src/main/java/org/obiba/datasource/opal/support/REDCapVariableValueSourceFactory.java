@@ -64,7 +64,7 @@ public class REDCapVariableValueSourceFactory implements VariableValueSourceFact
     String select_choices = variableMetadata.get("select_choices_or_calculations");
     if(!Strings.isNullOrEmpty(select_choices) && hasCategories(variableMetadata)) {
       Stream.of(select_choices.split("\\|")).forEach(parts -> {
-        String[] catParts = parts.split("\\s*,\\s*");
+        String[] catParts = parts.split("\\s*,\\s*", 2);
         builder.addCategory(
             Category.Builder
                 .newCategory(catParts[0])
