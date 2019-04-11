@@ -10,8 +10,10 @@
 
 package org.obiba.datasource.opal.support;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -23,36 +25,51 @@ import com.google.common.collect.Maps;
 final class MetaDataHelper {
 
   public static void splitChoicesMetaData(List<Map<String, String>> list) {
-    Map<Integer, Map<String, String>> indexToMetadata = IntStream.range(0, list.size())
-        .filter(index -> "checkbox".equals(list.get(index).get("field_type"))).boxed()
-        .collect(Collectors.toMap(index -> index, index -> list.get(index)));
+    List<Integer> indexToMetadata2 = IntStream.range(0, list.size())
+      .filter(index -> "checkbox".equals(list.get(index).get("field_type")))
+      .boxed()
+      .collect(Collectors.toList());
 
-    indexToMetadata.entrySet().forEach(entry -> createMetadataPerChoice(list, entry.getKey(), entry.getValue()));
+    int addedItems = 0;
+    for (int index : indexToMetadata2) {
+      int shiftedIndex = index + addedItems;
+      Map<String, String> metadata = list.get(shiftedIndex);
+      addedItems += createMetadataPerChoice(list,shiftedIndex, metadata);
+    }
   }
 
-  private static void createMetadataPerChoice(List<Map<String, String>> list, int index, Map<String, String> metadata) {
+  private static int createMetadataPerChoice(List<Map<String, String>> list, int index, Map<String, String> metadata) {
     String select_choices_or_calculations = metadata.get("select_choices_or_calculations");
-    Pattern compile = Pattern.compile("\\|\\s*([^,]*)", Pattern.DOTALL);
+    Pattern compile = Pattern.compile("\\|\\s*([^,]*),\\s*([^\\|]*)", Pattern.DOTALL);
     Matcher m = compile.matcher("|" + select_choices_or_calculations);
     List<Map<String, String>> metadataPerChoice = Lists.newArrayList();
     String fieldName = metadata.get("field_name");
+    String fieldLabel = metadata.get("field_label");
 
     if (m.find()) {
-      metadata.put("field_name", fieldName + sanitize(m.group(1)));
-      metadata.put("field_type", "text");
-      metadata.put("select_choices_or_calculations", "");
+      updateMetadataWithChoice(m, fieldName, fieldLabel, metadata);
     }
 
     // create the clones for the rest of the choice values
     while (m.find()) {
       Map<String, String> clone = Maps.newLinkedHashMap();
       clone.putAll(metadata);
-      clone.put("field_name", fieldName + sanitize(m.group(1)));
-      clone.put("field_type", "text");
-      clone.put("select_choices_or_calculations", "");
+      updateMetadataWithChoice(m, fieldName, fieldLabel, clone);
       metadataPerChoice.add(clone);
       list.add(index + metadataPerChoice.size(), clone);
     }
+
+    return metadataPerChoice.size();
+  }
+
+  private static void updateMetadataWithChoice(Matcher matcher,
+                                               String fieldName,
+                                               String fieldLabel,
+                                               Map<String, String> metadata) {
+    metadata.put("field_name", fieldName + sanitize(matcher.group(1)));
+    metadata.put("field_label", String.format("%s [%s]", fieldLabel, matcher.group(2).trim()));
+    metadata.put("field_type", "text");
+    metadata.put("select_choices_or_calculations", "");
   }
 
   /**

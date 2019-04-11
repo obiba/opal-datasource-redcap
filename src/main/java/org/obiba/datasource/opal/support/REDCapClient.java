@@ -125,7 +125,7 @@ public class REDCapClient {
     }
 
     List<Map<String, String>> result = postAndGetAsList(params, XML_FORMAT);
-    MetaDataHelper.splitChoicesMetaData(result);
+      MetaDataHelper.splitChoicesMetaData(result);
 
     LinkedHashMap<String, Map<String, String>> metaDataMap = new LinkedHashMap<>();
     result.forEach(data -> metaDataMap.put(data.get("field_name"), data));
