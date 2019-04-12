@@ -67,8 +67,8 @@ public class REDCapVariableValueSourceFactory implements VariableValueSourceFact
         String[] catParts = parts.split("\\s*,\\s*", 2);
         builder.addCategory(
             Category.Builder
-                .newCategory(catParts[0])
-                .addAttribute(buildAttribute(null, "label", catParts[1]))
+                .newCategory(catParts[0].trim())
+                .addAttribute(buildAttribute(null, "label", catParts[1].trim()))
                 .build());
       });
     }
