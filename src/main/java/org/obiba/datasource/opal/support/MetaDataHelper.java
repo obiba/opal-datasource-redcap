@@ -68,8 +68,7 @@ final class MetaDataHelper {
                                                Map<String, String> metadata) {
     metadata.put("field_name", fieldName + sanitize(matcher.group(1)));
     metadata.put("field_label", String.format("%s [%s]", fieldLabel, matcher.group(2).trim()));
-    metadata.put("field_type", "text");
-    metadata.put("select_choices_or_calculations", "");
+    metadata.put("select_choices_or_calculations", "0, No | 1, Yes");
   }
 
   /**
