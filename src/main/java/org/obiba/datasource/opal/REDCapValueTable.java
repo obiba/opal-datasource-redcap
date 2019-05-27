@@ -21,7 +21,10 @@ import org.obiba.magma.type.DateTimeType;
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class REDCapValueTable extends AbstractValueTable implements Disposable {
@@ -59,11 +62,11 @@ public class REDCapValueTable extends AbstractValueTable implements Disposable {
         this.metadata = metadata;
         setVariableEntityProvider(new REDCapVariableEntityProvider(entityType));
       } else {
-         throw new REDCapDatasourceParsingException("ID Variable not found", "", new Object[] { null });
+        throw new REDCapDatasourceParsingException("ID Variable not found", "", new Object[]{null});
       }
 
-    } catch(IOException e) {
-      throw new REDCapDatasourceParsingException(e.getMessage(), "", new Object[] { null });
+    } catch (IOException e) {
+      throw new REDCapDatasourceParsingException(e.getMessage(), "", new Object[]{null});
     }
 
   }
@@ -72,12 +75,12 @@ public class REDCapValueTable extends AbstractValueTable implements Disposable {
   protected ValueSetBatch getValueSetsBatch(List<VariableEntity> entities) {
     try {
       List<String> recordIds = entities.stream()
-        .map(entity -> (REDCapVariableEntityBean)entity)
-        .map( REDCapVariableEntityBean::getOriginalIdentifier)
-        .collect(Collectors.toList());
+          .map(entity -> (REDCapVariableEntityBean) entity)
+          .map(REDCapVariableEntityBean::getOriginalIdentifier)
+          .collect(Collectors.toList());
       records = project.getRecrods(recordIds, name);
-    } catch(IOException e) {
-      throw new REDCapDatasourceParsingException(e.getMessage(), "", new Object[] { null });
+    } catch (IOException e) {
+      throw new REDCapDatasourceParsingException(e.getMessage(), "", new Object[]{null});
     }
     return super.getValueSetsBatch(entities);
   }
@@ -121,7 +124,7 @@ public class REDCapValueTable extends AbstractValueTable implements Disposable {
 
     private final String entityType;
 
-    private Set<VariableEntity> variableEntities;
+    private List<VariableEntity> variableEntities;
 
     REDCapVariableEntityProvider(String entityType) {
       this.entityType = entityType;
@@ -140,22 +143,23 @@ public class REDCapValueTable extends AbstractValueTable implements Disposable {
 
     @NotNull
     @Override
-    public Set<VariableEntity> getVariableEntities() {
-      if(variableEntities == null) {
+    public List<VariableEntity> getVariableEntities() {
+      if (variableEntities == null) {
         variableEntities = getVariableEntitiesInternal();
       }
 
-      return Collections.unmodifiableSet(variableEntities);
+      return Collections.unmodifiableList(variableEntities);
     }
 
-    private Set<VariableEntity> getVariableEntitiesInternal() {
+    private List<VariableEntity> getVariableEntitiesInternal() {
       try {
         return project.getIdentifiers(name)
             .stream()
             .map(identifier -> new REDCapVariableEntityBean(entityType, identifier, identifierPrefix, identifierSuffix))
-            .collect(Collectors.toSet());
+            .distinct()
+            .collect(Collectors.toList());
       } catch (IOException e) {
-        throw new REDCapDatasourceParsingException(e.getMessage(), "", new Object[] { null });
+        throw new REDCapDatasourceParsingException(e.getMessage(), "", new Object[]{null});
       }
     }
   }
