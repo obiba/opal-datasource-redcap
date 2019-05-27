@@ -13,8 +13,8 @@
     <maven.compiler.source>1.8</maven.compiler.source>
 
     <junit.version>4.12</junit.version>
-
-    <opal.version>2.13-SNAPSHOT</opal.version>
+    <magma.version>2.0-SNAPSHOT</magma.version>
+    <opal.version>2.14-SNAPSHOT</opal.version>
     <obiba-commons.version>1.12-SNAPSHOT</obiba-commons.version>
     <httpclient.version>4.5.6</httpclient.version>
     <fasterxml.jackson.version>2.8.11</fasterxml.jackson.version>
@@ -37,6 +37,12 @@
   </properties>
 
   <dependencies>
+
+    <dependency>
+      <groupId>org.obiba.magma</groupId>
+      <artifactId>magma-api</artifactId>
+      <version>${magma.version}</version>
+    </dependency>
 
     <dependency>
       <groupId>org.obiba.opal</groupId>
