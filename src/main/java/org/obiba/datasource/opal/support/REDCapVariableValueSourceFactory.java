@@ -65,11 +65,10 @@ public class REDCapVariableValueSourceFactory implements VariableValueSourceFact
     if(!Strings.isNullOrEmpty(select_choices) && hasCategories(variableMetadata)) {
       Stream.of(select_choices.split("\\|")).forEach(parts -> {
         String[] catParts = parts.split("\\s*,\\s*", 2);
-        builder.addCategory(
-            Category.Builder
-                .newCategory(catParts[0].trim())
-                .addAttribute(buildAttribute(null, "label", catParts[1].trim()))
-                .build());
+        Category.Builder catBuilder = Category.Builder.newCategory(catParts[0].trim());
+        if (catParts.length>1)
+          catBuilder.addAttribute(buildAttribute(null, "label", catParts[1].trim()));
+        builder.addCategory(catBuilder.build());
       });
     }
   }
