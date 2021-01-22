@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 public class REDCapValueTable extends AbstractValueTable implements Disposable {
@@ -33,7 +34,7 @@ public class REDCapValueTable extends AbstractValueTable implements Disposable {
 
   private final Map<String, Map<String, String>> metadata;
 
-  private List<Map<String, String>> records;
+  private final List<Map<String, String>> records = new CopyOnWriteArrayList<Map<String, String>>();
 
   private final String identifierVariable;
 
@@ -78,7 +79,7 @@ public class REDCapValueTable extends AbstractValueTable implements Disposable {
           .map(entity -> (REDCapVariableEntityBean) entity)
           .map(REDCapVariableEntityBean::getOriginalIdentifier)
           .collect(Collectors.toList());
-      records = project.getRecrods(recordIds, name);
+      records.addAll(project.getRecords(recordIds, name));
     } catch (IOException e) {
       throw new REDCapDatasourceParsingException(e.getMessage(), "", new Object[]{null});
     }
