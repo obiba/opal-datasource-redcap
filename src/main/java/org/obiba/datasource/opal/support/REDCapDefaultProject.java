@@ -29,7 +29,7 @@ public class REDCapDefaultProject extends AbstractREDCapProject {
   }
 
   @Override
-  public List<Map<String, String>> getRecrods(List<String> recordIds, String table) throws IOException {
+  public List<Map<String, String>> getRecords(List<String> recordIds, String table) throws IOException {
     return client.getRecords(recordIds, Arrays.asList(identifierVariable), Arrays.asList(table), null);
   }
 

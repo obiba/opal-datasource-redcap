@@ -37,7 +37,7 @@ public class REDCapLongitudinalProject extends AbstractREDCapProject {
   }
 
   @Override
-  public List<Map<String, String>> getRecrods(List<String> recordIds, String table) throws IOException {
+  public List<Map<String, String>> getRecords(List<String> recordIds, String table) throws IOException {
     Map<String, String> formEventMap = tableToFormEventMap.get(table);
     return client.getRecords(recordIds, Arrays.asList(identifierVariable), Arrays.asList(formEventMap.get("form")),
         Arrays.asList(formEventMap.get("unique_event_name")));
