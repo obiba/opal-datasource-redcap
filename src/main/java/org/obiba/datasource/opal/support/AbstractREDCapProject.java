@@ -33,7 +33,7 @@ public abstract class AbstractREDCapProject {
 
   public abstract Set<String> getTables() throws IOException;
 
-  public abstract List<Map<String, String>> getRecrods(List<String> recordIds, String table) throws IOException;
+  public abstract List<Map<String, String>> getRecords(List<String> recordIds, String table) throws IOException;
 
   public void close() throws IOException {
     client.close();
