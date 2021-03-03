@@ -11,10 +11,10 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
 
-    <junit.version>4.12</junit.version>
-    <magma.version>2.0.0</magma.version>
-    <opal.version>3.0.8</opal.version>
-    <obiba-commons.version>1.12.0</obiba-commons.version>
+    <junit.version>4.13.1</junit.version>
+    <magma.version>2.2.0</magma.version>
+    <opal.version>4.0-SNAPSHOT</opal.version>
+    <obiba-commons.version>1.15.0</obiba-commons.version>
     <httpclient.version>4.5.6</httpclient.version>
     <fasterxml.jackson.version>2.8.11</fasterxml.jackson.version>
     <codehaus.woodstox.version>3.1.4</codehaus.woodstox.version>
@@ -253,7 +253,7 @@
     <repository>
       <id>obiba-releases</id>
       <name>Obiba Maven Releases Repository</name>
-      <url>https://dl.bintray.com/obiba/maven</url>
+      <url>https://obiba.jfrog.io/obiba/libs-release</url>
       <releases>
         <enabled>true</enabled>
       </releases>
