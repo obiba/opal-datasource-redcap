@@ -17,7 +17,7 @@ import org.obiba.magma.support.DatasourceParsingException;
 public class REDCapDatasourceParsingException extends DatasourceParsingException {
   private static final long serialVersionUID = 6146935409095135852L;
 
-  public REDCapDatasourceParsingException(String message, String messageKey, @Nullable Object... parameters) {
+  public REDCapDatasourceParsingException(String message, String messageKey, Object... parameters) {
     super(message, messageKey, parameters);
   }
 }

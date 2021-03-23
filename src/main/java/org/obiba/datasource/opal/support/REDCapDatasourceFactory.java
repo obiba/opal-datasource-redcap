@@ -39,7 +39,7 @@ public class REDCapDatasourceFactory extends AbstractDatasourceFactory {
         getIdentifierSuffix()
       );
     } catch(IOException e) {
-      throw new REDCapDatasourceParsingException(e.getMessage(), "", new Object[] { null });
+      throw new REDCapDatasourceParsingException(e.getMessage(), "");
     }
   }
 

@@ -225,7 +225,7 @@ public class REDCapClient {
       try(InputStream inputStream = response.getEntity().getContent()) {
         return mapper.readValue(inputStream, javaType);
       } catch(Exception e) {
-        throw new REDCapDatasourceParsingException(e.getMessage(), "", new Object[] { null });
+        throw new REDCapDatasourceParsingException(e.getMessage(), "");
       }
     }
 

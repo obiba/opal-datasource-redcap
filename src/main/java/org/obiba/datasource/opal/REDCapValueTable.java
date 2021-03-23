@@ -63,11 +63,11 @@ public class REDCapValueTable extends AbstractValueTable implements Disposable {
         this.metadata = metadata;
         setVariableEntityProvider(new REDCapVariableEntityProvider(entityType));
       } else {
-        throw new REDCapDatasourceParsingException("ID Variable not found", "", new Object[]{null});
+        throw new REDCapDatasourceParsingException("ID Variable not found", "");
       }
 
     } catch (IOException e) {
-      throw new REDCapDatasourceParsingException(e.getMessage(), "", new Object[]{null});
+      throw new REDCapDatasourceParsingException(e.getMessage(), "");
     }
 
   }
@@ -81,7 +81,7 @@ public class REDCapValueTable extends AbstractValueTable implements Disposable {
           .collect(Collectors.toList());
       records.addAll(project.getRecords(recordIds, name));
     } catch (IOException e) {
-      throw new REDCapDatasourceParsingException(e.getMessage(), "", new Object[]{null});
+      throw new REDCapDatasourceParsingException(e.getMessage(), "");
     }
     return super.getValueSetsBatch(entities);
   }
@@ -160,7 +160,7 @@ public class REDCapValueTable extends AbstractValueTable implements Disposable {
             .distinct()
             .collect(Collectors.toList());
       } catch (IOException e) {
-        throw new REDCapDatasourceParsingException(e.getMessage(), "", new Object[]{null});
+        throw new REDCapDatasourceParsingException(e.getMessage(), "");
       }
     }
   }
