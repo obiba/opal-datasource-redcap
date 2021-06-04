@@ -15,7 +15,7 @@
     <magma.version>2.2.1</magma.version>
     <opal.version>4.0.0</opal.version>
     <obiba-commons.version>1.15.1</obiba-commons.version>
-    <httpclient.version>4.5.6</httpclient.version>
+    <httpclient.version>4.5.13</httpclient.version>
     <fasterxml.jackson.version>2.8.11</fasterxml.jackson.version>
     <codehaus.woodstox.version>3.1.4</codehaus.woodstox.version>
 
