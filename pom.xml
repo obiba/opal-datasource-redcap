@@ -17,8 +17,8 @@
     <obiba-commons.version>4.0-SNAPSHOT</obiba-commons.version>
     <guava.version>33.0.0-jre</guava.version>
     <httpclient.version>5.2.1</httpclient.version>
-    <jackson.version>2.16.1</jackson.version>
-    <codehaus.woodstox.version>3.1.4</codehaus.woodstox.version>
+    <jackson.version>2.17.2</jackson.version>
+    <codehaus.woodstox.version>4.2.2</codehaus.woodstox.version>
 
     <!-- maven plugins -->
     <github-release-plugin.version>1.2.0</github-release-plugin.version>
