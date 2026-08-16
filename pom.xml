@@ -16,7 +16,7 @@
     <opal.version>5.0.0</opal.version>
     <obiba-commons.version>4.2.0</obiba-commons.version>
     <guava.version>33.0.0-jre</guava.version>
-    <httpclient.version>5.2.1</httpclient.version>
+    <httpclient.version>5.6.3</httpclient.version>
     <jackson.version>2.22.1</jackson.version>
     <codehaus.woodstox.version>4.2.2</codehaus.woodstox.version>
 
